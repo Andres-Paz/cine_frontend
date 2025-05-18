@@ -1,30 +1,25 @@
 <template>
-    <div class="min-h-screen bg-gray-100">
-      <div class="flex justify-between items-center p-4">
-        <h2 class="text-xl font-semibold">Bienvenido {{ user?.perfil?.nombre }}</h2>
-        <input
-          v-model="search"
-          type="text"
-          placeholder="Buscar película..."
-          class="p-2 border rounded w-64"
-        />
-      </div>
+    <div class="bg-gray-100">
+      <AppActions
+        v-model:search="search" 
+        :is_admin="user?.role === 'admin' ? true : false"
+        item="pelicula" 
+      />
   
       <div class="flex flex-wrap justify-center p-4">
         <MovieCard
           v-for="movie in filteredMovies"
           :key="movie.id"
           :movie="movie"
+          :is_admin="user?.role === 'admin' ? true : false"
         />
       </div>
     </div>
   </template>
   
   <script setup>
-  import MovieCard from '@/components/movies/MovieCard.vue'
-  import { useAuthStore } from '@/store/auth'
-  import { useMoviesStore } from '@/store/movies'
-  
+  import MovieCard from '~/components/movies/MovieCard.vue'
+
   const { user } = storeToRefs(useAuthStore())
   const moviesStore = useMoviesStore()
   const { getMovies } = moviesStore

@@ -1,7 +1,3 @@
-// stores/auth.js
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-
 export const useAuthStore = defineStore('auth', () => {
   const { $api } = useNuxtApp()
   const user = ref(null)
@@ -59,6 +55,22 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = value
   }
 
+  async function getUsersMe(){
+    loading.value = true
+    try {
+        const response = await $api('/usuarios/me', {
+            method: 'GET',
+        })
+        user.value = response
+        return response
+    } catch (error) {
+        console.error('Error:', error.message)
+        return null
+    } finally {
+        loading.value = false
+    }
+  }
+
   return {
     user,
     token,
@@ -67,5 +79,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     logout,
     setToken: setTokenValue,
+    getUsersMe,
   }
 })

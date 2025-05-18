@@ -58,6 +58,7 @@
             :key="funcion.id"
             :funcion="funcion"
             :tipoPelicula="funcion.tipo"
+            @comprar="handleReservaciones"
             />
         </div>
     </div>
@@ -69,10 +70,6 @@
 
   import FunctionCard from '~/components/functions/FunctionCard.vue'
 
-  import {useMovieStore} from '@/store/movie'
-  import {useFunctionsStore} from '@/store/functions'
-  import { useTicketsStore } from '~/store/tickets'
-
 const movieStore = useMovieStore()
 const { getMovie } = movieStore
 const { movie } = storeToRefs(movieStore)
@@ -80,10 +77,6 @@ const { movie } = storeToRefs(movieStore)
 const funcionesStore = useFunctionsStore()
 const { getFunctions } = funcionesStore
 const { functions } = storeToRefs(funcionesStore)
-
-const ticketsStore = useTicketsStore()
-const { getTickets } = ticketsStore
-const { tickets } = storeToRefs(ticketsStore)
 
 const route = useRoute()
 onMounted(async ()=>{
@@ -106,11 +99,6 @@ onMounted(async ()=>{
     .sort(); // ordena cronológicamente
 });
 
-
-
-
-  
-  
   // Filtros
   const filtros = ref({
     fecha: fechaHoy,
@@ -136,6 +124,9 @@ onMounted(async ()=>{
     return cumpleFecha && cumpleHora && cumpleFormato
   })
 })
+const handleReservaciones = (id) => {
+    navigateTo(`/peliculas/${route.params.peliculaId}/reservaciones/${id}`)
+  }
 
   </script>
   

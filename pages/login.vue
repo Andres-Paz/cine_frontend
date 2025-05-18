@@ -18,8 +18,6 @@
   </div>
 </template>
 <script setup>
-import { useAuthStore } from '@/store/auth'
-
 
 const username = ref('')
 const password = ref('')
