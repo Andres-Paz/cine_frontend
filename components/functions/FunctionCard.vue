@@ -12,7 +12,7 @@
   
       <button
         class="mt-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition"
-        @click="$emit('comprar', funcion.id)"
+        @click="comprar"
       >
         Comprar tickets
       </button>
@@ -38,8 +38,10 @@
   return fecha.toLocaleDateString('es-ES', opciones); // Ej: "17 de mayo"
 });
 
-  
-  defineEmits(['comprar'])
+  const route = useRoute();
+  const comprar = () => {
+    navigateTo(`/peliculas/${route.params.peliculaId}/reservaciones/${props.funcion.id}`);
+  }
   </script>
   
   <style scoped>

@@ -46,7 +46,6 @@ const currentTitle = computed(() => {
     if(props.is_user){
         if (route.name === 'mis-tickets') return 'Mis Tickets'
         if (route.name?.toString().includes('peliculas/') || route.params.peliculaId) return 'Funciones'
-        if (route.name?.toString().includes('reservaciones/') || route.params.funcionId) return 'Reservaciones'
         return 'Cartelera'
     }
     else {

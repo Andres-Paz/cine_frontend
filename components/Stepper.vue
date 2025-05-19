@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-center bg-gray-100 h-full">
-    <div class="bg-white w-3/4 h-3/4 rounded-2xl shadow-lg p-6">
+    <div class="bg-white w-3/4 min-h-3/4 rounded-2xl shadow-lg p-6">
       <div class="relative flex justify-between items-center mb-6">
         <div class="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-300 z-0">
             <div
@@ -22,25 +22,25 @@
         >
             {{ n }}
         </div>
-        </div>
-
-      <div class="min-h-[200px]">
+      </div>
+      <h1 class="text-2xl font-semibold text-gray-800 text-center">{{ title[step - 1] }}</h1>
+      <div class="flex flex-col min-h-[350px] items-center justify-center">
         <slot v-if="step === 1" name="step1" />
         <slot v-else-if="step === 2" name="step2" />
         <slot v-else name="step3" />
       </div>
 
-      <div class="flex justify-between mt-6">
+      <div class="flex justify-between items-end mt-6">
         <button
           v-if="step === 1"
-          @click="cancel"
+          @click="$emit('cancel')"
           class="text-gray-600 border border-gray-300 px-4 py-2 rounded hover:bg-gray-100 cursor-pointer"
         >
           Cancelar
         </button>
         <button
           v-else
-          @click="prevStep"
+          @click="$emit('prevStep')"
           class="text-gray-600 border border-gray-300 px-4 py-2 rounded hover:bg-gray-100 cursor-pointer"
         >
           Regresar
@@ -48,14 +48,14 @@
 
         <button
           v-if="step < 3"
-          @click="nextStep"
+          @click="$emit('nextStep')"
           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
         >
           Siguiente
         </button>
         <button
           v-else
-          @click="finish"
+          @click="$emit('save')"
           class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 cursor-pointer"
         >
           Finalizar compra
@@ -66,24 +66,9 @@
 </template>
 
 <script setup>
+const step = defineModel('step', {type: Number, required: true, default: 1})
 
-const step = ref(1)
+defineEmits(['nextStep', 'prevStep', 'cancel', 'save'])
 
-const nextStep = () => {
-  if (step.value < 3) step.value++
-}
-
-const prevStep = () => {
-  if (step.value > 1) step.value--
-}
-
-const cancel = () => {
-  // Puedes emitir un evento o navegar
-  alert('Proceso cancelado')
-}
-
-const finish = () => {
-  // Finalizar proceso
-  alert('Compra finalizada')
-}
+const title = ['Selecciona la cantidad de tickets', 'Selecciona tus asientos', 'Pago con tarjeta']
 </script>

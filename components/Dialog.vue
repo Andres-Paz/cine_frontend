@@ -1,12 +1,12 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 bg-opacity-50">
     <div class="bg-white w-full max-w-md rounded-xl shadow-lg relative p-6">
       <!-- Botón X -->
       <button
         @click="$emit('cancelar')"
-        class="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+        class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 cursor-pointer"
       >
-        ✕
+        <X />
       </button>
 
       <!-- Título -->
@@ -18,16 +18,17 @@
       </div>
 
       <!-- Footer con botones -->
-      <div class="flex justify-end space-x-3">
+      <div class="flex justify-between space-x-3">
         <button
           @click="$emit('cancelar')"
-          class="px-4 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-100"
+          class="px-4 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-100 cursor-pointer"
         >
           {{ cancelarText }}
         </button>
         <button
           @click="$emit('aceptar')"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
+          :class="aceptarColor ? `bg-${aceptarColor}-600 hover:bg-${aceptarColor}-700`: ''"
         >
           {{ aceptarText }}
         </button>
@@ -37,6 +38,13 @@
 </template>
 
 <script setup>
+import { X } from 'lucide-vue-next'
+const isOpen = defineModel('open', {
+  type: Boolean,
+  required: true,
+  default: false
+})
+
 const props = defineProps({
   titulo: String,
   aceptarText: {
@@ -46,6 +54,10 @@ const props = defineProps({
   cancelarText: {
     type: String,
     default: 'Cancelar'
+  },
+  aceptarColor: {
+    type: String,
+    default: 'blue'
   }
 })
 

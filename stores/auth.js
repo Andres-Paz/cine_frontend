@@ -30,7 +30,6 @@ export const useAuthStore = defineStore('auth', () => {
         }
       })
       user.value = response
-      console.log('Usuario logueado:', user.value)
       navigateTo('/peliculas')
       return response
     } catch (error) {
@@ -58,6 +57,12 @@ export const useAuthStore = defineStore('auth', () => {
   async function getUsersMe(){
     loading.value = true
     try {
+      const { getToken } = useNuxtApp().$authCookie
+      token.value = getToken()
+      if (!token.value) {
+        navigateTo('/login')
+        return
+      }
         const response = await $api('/usuarios/me', {
             method: 'GET',
         })

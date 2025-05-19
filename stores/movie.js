@@ -1,4 +1,4 @@
-export const useMovieStore = defineStore('movieStore', () => {
+export const useMovieStore = defineStore('ticketStore', () => {
     const { $api } = useNuxtApp()
     const movie = ref()
     const loading = ref(false)
@@ -22,15 +22,19 @@ export const useMovieStore = defineStore('movieStore', () => {
     async function postMovie(data) {
         loading.value = true
         try {
-            await $api('/peliculas', {
+            const response = await $api('/peliculas', {
                 method: 'POST',
                 body: data
             })
+            movie.value = response
+            return response
         } catch (error) {
             console.log(error.data?.message ?? error.name)
+            return error
         } finally {
             loading.value = false
         }
+        
     }
 
     async function putMovie(id, data) {
@@ -40,9 +44,11 @@ export const useMovieStore = defineStore('movieStore', () => {
                 method: 'PUT',
                 body: data
             })
-            item.value = response
+            movie.value = response
+            return response
         } catch (error) {
             console.log(error.data?.message ?? error.name)
+            return error
         } finally {
             loading.value = false
         }
@@ -51,11 +57,13 @@ export const useMovieStore = defineStore('movieStore', () => {
     async function deleteMovie(id) {
         loading.value = true
         try {
-            await $api(`/peliculas/${id}`, {
+            const response = await $api(`/peliculas/${id}`, {
                 method: 'DELETE'
             })
+            return response
         } catch (error) {
             console.log(error.data?.message ?? error.name)
+            return error
         } finally {
             loading.value = false
         }

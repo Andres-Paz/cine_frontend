@@ -1,82 +1,119 @@
 <template>
-  <div class="flex gap-6">
-    <!-- Sidebar de leyenda -->
-    <div v-if="is_selectable" class="w-48 space-y-4">
-      <h3 class="text-lg font-semibold">Leyenda</h3>
-      <div class="flex items-center gap-2">
-        <PanelBottom class="w-6 h-6 text-gray-400" /> <span>Disponibles</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <PanelBottom class="w-6 h-6 text-red-600" /> <span>Reservadas</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <PanelBottom class="w-6 h-6 text-blue-600" /> <span>Seleccionadas</span>
-      </div>
-      <div class="pt-4 text-sm">
-        <span class="font-medium">Asientos:</span>
-        {{ selectedSeats.length }} de {{ ticketsNum }}
-      </div>
+  <div class="flex flex-row w-full gap-8">
+  <!-- Leyenda lateral -->
+  <div
+    v-if="is_selectable"
+    class="w-48 shrink-0 space-y-4 text-left justify-self-start"
+  >
+    <h3 class="text-lg font-semibold">Leyenda</h3>
+    <div class="flex items-center gap-2">
+      <PanelBottom class="w-6 h-6 text-gray-400" /> <span>Disponibles</span>
     </div>
+    <div class="flex items-center gap-2">
+      <PanelBottom class="w-6 h-6 text-red-600" /> <span>Reservadas</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <PanelBottom class="w-6 h-6 text-blue-600" /> <span>Seleccionadas</span>
+    </div>
+    <div class="pt-4 text-sm">
+      <span class="font-medium">Asientos:</span>
+      {{ selectedSeats }} de {{ ticketsNum }}
+    </div>
+  </div>
 
-    <div class="w-full">
-      <!-- Encabezado: Screen y Exit -->
-      <div class="flex justify-between items-center mb-4 gap-6">
+  <!-- Zona central de butacas -->
+  <div class="flex w-full items-center justify-center">
+    <div class="w-fit justify-self-center items-center justify-center overflow-x-auto min-w-[300px]">
+      <!-- Encabezado: Exit y Pantalla -->
+      <div class="flex justify-between items-center w-full max-w-full px-4 mb-4 gap-4">
         <span class="text-sm font-medium text-gray-700">Exit</span>
-        <div class="bg-slate-800 text-white text-center w-full py-2 rounded">Screen</div>
+        <div class="bg-slate-800 text-white text-center px-6 rounded w-full max-w-lg">Screen</div>
       </div>
 
-      <!-- Grid con filas y columnas -->
-      <div class="grid gap-2 mt-16">
-        <!-- Filas -->
-        <div
-          v-for="(fila, filaIndex) in filasArray"
-          :key="fila"
-          class="grid items-center"
-          :style="{ gridTemplateColumns: '40px ' + '1fr '.repeat(columnas) }"
-        >
-          <!-- Letra de fila -->
-          <div class="text-sm font-medium text-gray-700">{{ fila }}</div>
+      <!-- Contenedor de butacas con scroll horizontal -->
+      <div>
+        <div class="flex flex-col gap-3 items-center">
+          <!-- Filas -->
+          <div
+            v-for="(fila) in filasArray"
+            :key="fila"
+            class="grid items-center gap-x-3"
+            :style="{ gridTemplateColumns: '40px ' + 'repeat(' + columnas + ', 40px)' }"
+          >
+            <!-- Letra de la fila -->
+            <div class="text-sm font-medium text-gray-700 sticky left-0 bg-white py-0.5">{{ fila }}</div>
 
-          <!-- Asientos -->
-          <div
-            v-for="col in columnas"
-            :key="fila + col"
-            class="flex justify-center"
-          >
-            <PanelBottom
-              class="w-6 h-6 cursor-pointer"
-              :class="seatColor(fila + col)"
-              @click="toggleSeat(fila + col)"
-            />
+            <!-- Butacas -->
+            <div
+              v-for="col in columnas"
+              :key="fila + col"
+              class="flex justify-center"
+            >
+              <PanelBottom
+                class="w-6 h-6 cursor-pointer transition-colors"
+                :class="seatColor(fila + col)"
+                @click="toggleSeat(fila + col)"
+              />
+            </div>
           </div>
-        </div>
-        <div class="grid" :style="{ gridTemplateColumns: '40px ' + '1fr '.repeat(columnas) }">
-          <div></div>
+
+          <!-- Números de columna debajo -->
           <div
-            v-for="col in columnas"
-            :key="'header-' + col"
-            class="text-center text-xs font-medium text-gray-600"
+            class="grid mt-2 gap-x-3"
+            :style="{ gridTemplateColumns: '40px ' + 'repeat(' + columnas + ', 40px)' }"
           >
-            {{ col }}
+            <div></div>
+            <div
+              v-for="col in columnas"
+              :key="'header-' + col"
+              class="text-center text-sm font-medium text-gray-600"
+            >
+              {{ col }}
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  
+</div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { PanelBottom } from 'lucide-vue-next'
 
+const newTickets = defineModel('new', {type: Array, default: []})
 // Props
 const props = defineProps({
-  filas: Number,
-  columnas: Number,
-  is_selectable: Boolean,
-  ticketsNum: Number,
+  filas: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  columnas: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  is_selectable: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  ticketsNum: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  tickets: {
+    type: Object,
+    required: true,
+    default: () => ({})
+  }
 })
 
+//const selectedSeats = ref(0)
 // Convertir número de filas a letras (A, B, C, ...)
 const filasArray = computed(() => {
   return Array.from({ length: props.filas }, (_, i) =>
@@ -84,35 +121,41 @@ const filasArray = computed(() => {
   )
 })
 
-// Refs
-const selectedSeats = ref([])
-const tickets = ref([
-    {"butaca": 'A3'},
-    {"butaca": 'A4'},
-])
-
 // Métodos
 const seatColor = (id) => {
-  if (tickets.value.some((t) => t.butaca === id)) {
+  if (props.tickets.some((t) => t.butaca === id)) {
     return 'text-red-600 cursor-not-allowed'
-  } else if (selectedSeats.value.includes(id)) {
-    return 'text-blue-600'
+  } else if (newTickets.value.some((t) => t.butaca === id)) {
+    return 'text-blue-600' 
   } else {
     return 'text-gray-400'
   }
 }
 
+
 const toggleSeat = (id) => {
   if (!props.is_selectable) return
-  if (tickets.value.some((t) => t.butaca === id)) return
 
-  const idx = selectedSeats.value.indexOf(id)
-  if (idx !== -1) {
-    selectedSeats.value.splice(idx, 1)
-  } else if (selectedSeats.value.length < props.ticketsNum) {
-    selectedSeats.value.push(id)
+  const ticketIndex = newTickets.value.findIndex((t) => t.butaca === id)
+
+  if (ticketIndex !== -1) {
+    newTickets.value[ticketIndex].butaca = null
+  } else {
+    const emptyTicket = newTickets.value.find((t) => t.butaca === null)
+    if (emptyTicket) {
+      emptyTicket.butaca = id
+    }
   }
 }
+
+const selectedSeats = computed(() => {
+  let cont = 0
+  for (const ticket of newTickets.value) {
+    if (ticket.butaca) cont++
+  }
+  return cont
+})
+
 </script>
 
 <style scoped>
