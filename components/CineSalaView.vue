@@ -98,17 +98,14 @@ const props = defineProps({
   },
   is_selectable: {
     type: Boolean,
-    required: true,
     default: false
   },
   ticketsNum: {
     type: Number,
-    required: true,
     default: 0
   },
   tickets: {
     type: Object,
-    required: true,
     default: () => ({})
   }
 })
@@ -123,6 +120,7 @@ const filasArray = computed(() => {
 
 // Métodos
 const seatColor = (id) => {
+  if (!props.is_selectable) return
   if (props.tickets.some((t) => t.butaca === id)) {
     return 'text-red-600 cursor-not-allowed'
   } else if (newTickets.value.some((t) => t.butaca === id)) {

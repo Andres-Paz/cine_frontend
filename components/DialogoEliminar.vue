@@ -1,14 +1,14 @@
 <template>
     <Dialog 
       v-model:open="isOpen"
-      :title="`Eliminar ${item}`"
+      :titulo="`Eliminar ${item}`"
       @aceptar="$emit('aceptar')"
       @cancelar="$emit('cancelar')"
       :aceptar-text="`Eliminar`"
     >
-        <div class="text-center">
-        <p class="text-gray-700">¿Estás seguro de que deseas eliminar <strong>{{ item }}</strong>?</p>
-        <p class="text-gray-500">Esta acción no se puede deshacer.</p>
+        <div class="text-center max-w-sm">
+            <p class="text-gray-700">¿Estás seguro de que deseas eliminar <strong>{{ item }}</strong>?</p>
+            <p class="text-gray-500">Esta acción no se puede deshacer.</p>
         </div>
     </Dialog>
 </template>
@@ -16,7 +16,6 @@
 import Dialog from './Dialog.vue';
 defineEmits(['aceptar', 'cancelar']);
 defineProps({
-
     item: {
         type: String,
         required: true,

@@ -124,8 +124,11 @@ onMounted(async ()=>{
     return cumpleFecha && cumpleHora && cumpleFormato
   })
 })
+
+const router = useRouter()
 const handleReservaciones = (id) => {
-    navigateTo(`/peliculas/${route.params.peliculaId}/reservaciones/${id}`)
+    router.push(`/peliculas/${route.params.peliculaId}/reservaciones/${id}`)
+    //navigateTo(`/peliculas/${route.params.peliculaId}/reservaciones/${id}`)
   }
 
   </script>

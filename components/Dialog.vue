@@ -1,6 +1,8 @@
 <template>
   <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 bg-opacity-50">
-    <div class="bg-white w-full max-w-md rounded-xl shadow-lg relative p-6">
+    <div class="bg-white w-full rounded-xl shadow-lg relative p-6" 
+      :class="movieForm ? 'max-w-3/4 max-h-3/4' : 'max-w-md'"
+    >
       <!-- Botón X -->
       <button
         @click="$emit('cancelar')"
@@ -13,7 +15,7 @@
       <h2 class="text-xl font-semibold mb-4">{{ titulo }}</h2>
 
       <!-- Cuerpo del diálogo -->
-      <div class="mb-6">
+      <div class="mb-6 flex w-full">
         <slot />
       </div>
 
@@ -38,7 +40,7 @@
 </template>
 
 <script setup>
-import { X } from 'lucide-vue-next'
+import { Bold, X } from 'lucide-vue-next'
 const isOpen = defineModel('open', {
   type: Boolean,
   required: true,
@@ -58,6 +60,10 @@ const props = defineProps({
   aceptarColor: {
     type: String,
     default: 'blue'
+  },
+  movieForm: {
+    type: Boolean,
+    default: false
   }
 })
 

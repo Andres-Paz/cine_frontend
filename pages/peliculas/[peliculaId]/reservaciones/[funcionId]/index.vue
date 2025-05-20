@@ -40,7 +40,12 @@
   import TicketCantidadForm from '~/components/reservations/TicketCantidadForm.vue';
   import PagoTicketForm from '~/components/reservations/PagoTicketForm.vue';
   import DialogPagoExitoso from '~/components/reservations/DialogPagoExitoso.vue';
-   
+  import { useTicketsStore } from '~/stores/tickets.js';
+  import { useSalaStore } from '~/stores/sala.js';
+  import { useFunctionStore } from '~/stores/function.js';
+  import { useTicketStore } from '~/stores/ticket';
+
+  const ticketStore = useTicketStore()
   const { user } = storeToRefs(useAuthStore())
 
   const ticketsStore = useTicketsStore()
@@ -55,7 +60,6 @@
   const { getFunction } = functionStore
   const { functionRef } = storeToRefs(functionStore)
 
-  const { postTicket } = useTicketStore()
 
   const route = useRoute()
 
@@ -116,10 +120,13 @@
     if (step.value > 1) step.value--
   }
    
-   
+  const router = useRouter()
   const cancel = () => {
-    if(route.params.peliculasId) navigateTo(`/peliculas/${route.params.peliculasId}`)
-    navigateTo(`/peliculas`)
+    if(route.params.peliculasId) {
+      router.push(`/peliculas/${route.params.peliculasId}`)
+    } else {
+      router.push(`/peliculas`)
+    }
   }
    
   const finish = async () => {
@@ -134,7 +141,7 @@ const pagar = async () => {
  
   if (!cardErrors.value.number && !cardErrors.value.expiry && !cardErrors.value.cvv) {
     for (const ticketData of newTickets.value) {
-      await postTicket(ticketData)
+      await ticketStore.postTicket(ticketData)
     }
     showDialogPagoExitoso.value = true
   }
