@@ -39,6 +39,22 @@ export const useUsuarioStore = defineStore('usuarioStore', () => {
     }
   }
 
+  async function postUsuarioPublico(data) {
+    loading.value = true
+    try {
+      const response = await $api('/usuarios/public', {
+        method: 'POST',
+        body: data
+      })
+      return response
+    } catch (error) {
+      console.log(error.data?.message ?? error.name)
+      return error
+    } finally {
+      loading.value = false
+    }
+  }
+
   async function putUsuario(id, data) {
     loading.value = true
     try {
@@ -77,6 +93,7 @@ export const useUsuarioStore = defineStore('usuarioStore', () => {
     getUsuario,
     postUsuario,
     putUsuario,
-    deleteUsuario
+    deleteUsuario,
+    postUsuarioPublico
   }
 })

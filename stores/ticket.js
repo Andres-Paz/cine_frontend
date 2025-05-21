@@ -1,42 +1,47 @@
-import { ref } from 'vue'
-import { defineStore } from 'pinia'
-
 export const useTicketStore = defineStore('ticketStore', () => {
-  const ticket = ref(null)
+  const { $api } = useNuxtApp()
+  const ticket = ref()
   const loading = ref(false)
 
-  // Obtener un ticket por ID
-  const getTicket = async (id) => {
-    loading.value = true
-    try {
-      const response = await $api.get(`/tickets/${id}`)
-      ticket.value = response.data
-    } catch (error) {
-      console.error('Error al obtener el ticket:', error)
-      throw error
-    } finally {
-      loading.value = false
-    }
+  async function getTicket(id) {
+      loading.value = true
+      try {
+          const response = await $api(`/tickets/${id}`, {
+              method: 'GET'
+          })
+          ticket.value = response
+          return response
+      } catch (error) {
+          console.error('Error:', error.message)
+          return null
+      } finally {
+          loading.value = false
+      }
   }
 
-  // Crear un nuevo ticket
-  const postTicket = async (data) => {
-    loading.value = true
-    try {
-      const response = await $api.post('/tickets', data)
-      return response.data
-    } catch (error) {
-      console.error('Error al crear el ticket:', error)
-      throw error
-    } finally {
-      loading.value = false
-    }
+  async function postTicket(data) {
+      loading.value = true
+      try {
+          const response = await $api('/tickets', {
+              method: 'POST',
+              body: data
+          })
+          ticket.value = response
+          return response
+      } catch (error) {
+          console.log(error.data?.message ?? error.name)
+          return error
+      } finally {
+          loading.value = false
+      }
+      
   }
 
+  
   return {
-    ticket,
-    loading,
-    getTicket,
-    postTicket
+      ticket,
+      loading,
+      getTicket,
+      postTicket
   }
 })

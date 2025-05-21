@@ -12,6 +12,9 @@
               class="bg-blue-500 text-white px-4 py-2 rounded w-full">
         Entrar
       </button>
+      <p class="text-sm text-gray-500 mt-2">
+        ¿No tienes cuenta? <nuxt-link to="/sign-up" class="text-blue-500">Registrate</nuxt-link>
+      </p>
 
       <p v-if="error" class="text-red-500 mt-2">{{ error }}</p>
     </form>
@@ -40,4 +43,5 @@ const submit = async () => {
 definePageMeta({
   layout: 'login'
 })
+
 </script>
